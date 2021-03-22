@@ -1,0 +1,112 @@
+<mvc:View
+	controllerName="com.mjzsoft.FileUploader0Auto.controller.Detail"
+	xmlns="sap.m"
+	xmlns:semantic="sap.f.semantic"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+
+	<semantic:SemanticPage
+		id="detailPage"
+		busy="{detailView>/busy}"
+		busyIndicatorDelay="{detailView>/delay}">
+		<semantic:titleHeading>
+			<Title
+				text="{Name}"
+				level="H2"/>
+		</semantic:titleHeading>
+		<semantic:headerContent>
+			<ObjectAttribute title="ID" text="{Id}"/>
+		</semantic:headerContent>
+		<semantic:content>
+			<UploadCollection 
+				id="UploadCollectionPictures" 
+				maximumFilenameLength="222" 
+				maximumFileSize="10" 
+				multiple="false" 
+				instantUpload="true"
+				change="onUploadCollectionChange" 
+				filenameLengthExceed="onFilenameLengthExceed" 
+				fileSizeExceed="onFileSizeExceed" 
+				typeMissmatch="onTypeMissmatch" 
+				uploadComplete="onUploadComplete"
+				uploadTerminated="onUploadTerminated" 
+				beforeUploadStarts="onBeforeUploadStarts" 
+				fileDeleted="onFileDeleted" 
+				fileRenamed="onFileRenamed"
+				modelContextChange="onModelContextChange"
+				busyIndicatorDelay="0"
+				items="{ path: 'filesModel>/DocObjFileSet', filters: [{ path : 'FileId', operator : 'NE', value1 : '', and: 'true'}], templateShareable: false}"
+				uploadEnabled="{= ${appView>/fileUploadPermission} &amp;&amp; ${appView>/uploadEnabled} }"
+				fileType="jpg,jpeg,png,bmp,gif,docx,xlsx,msg,pdf,txt,zip" 
+				app:myModelName="filesModel" 
+				app:myObjectType="ZSCHADENSM"
+				app:myDocumentType="Z01" 
+				app:myObjectId="{Id}"
+				class="UploadCollectionPictures">
+				<toolbar>
+					<OverflowToolbar design="Solid" class="mjzStickyToolbar">
+						<core:Icon src="sap-icon://attachment" size="auto" tooltip="{i18n>fileUploader_Attachment}"/>
+						<Title text="{i18n>fileUploader_Attachments}"/>
+						<ToolbarSpacer/>
+						<SearchField width="10rem" search="onSearchFile" id="searchFilePicturesField" app:myTarget="UploadCollectionPictures" enabled="true"/>
+						<UploadCollectionToolbarPlaceholder/>
+					</OverflowToolbar>
+				</toolbar>
+				<items>
+					<UploadCollectionItem 
+						documentId="{filesModel>FileId}" 
+						fileName="{filesModel>FileName}" 
+						mimeType="{filesModel>Mimetype}" 
+						selected="false"
+						enableEdit="{appView>/fileEditPermission}"
+						visibleEdit="true"
+						enableDelete="{appView>/fileDeletePermission}"
+						visibleDelete="true"
+						url="{ parts: [ 'filesModel>FileId', 'filesModel>Documentnumber', 'filesModel>Documenttype', 'appView>/fileReadPermission'], formatter: '.getFileUrl'}"
+						app:myDocumentnumber="{filesModel>Documentnumber}">
+						<attributes>
+							<ObjectAttribute text="{filesModel>Mimetype}" title="{i18n>fileUploader_Attribute}"/>
+							<ObjectAttribute 
+								text="{i18n>fileUploader_View}" 
+								active="true"
+								app:url="{ parts: [ 'filesModel>FileId', 'filesModel>Documentnumber', 'filesModel>Documenttype', 'appView>/fileReadPermission'], formatter: '.getFileUrl'}"
+								app:name="{filesModel>FileName}" 
+								app:mimeType="{filesModel>Mimetype}" 
+								visible="{= ${filesModel>Mimetype} === 'PDF' }"
+								press="onViewFileLinkPressed"
+							/>
+						</attributes>
+					</UploadCollectionItem>
+				</items>
+			</UploadCollection>
+		</semantic:content>
+		<!--Semantic ShareMenu Buttons-->
+		<semantic:sendEmailAction>
+			<semantic:SendEmailAction
+				id="shareEmail"
+				press=".onSendEmailPress"/>
+		</semantic:sendEmailAction>
+
+		<semantic:closeAction>
+			<semantic:CloseAction
+					id="closeColumn"
+					press=".onCloseDetailPress"/>
+		</semantic:closeAction>
+
+		<semantic:fullScreenAction>
+			<semantic:FullScreenAction
+					id="enterFullScreen"
+					visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+					press=".toggleFullScreen"/>
+		</semantic:fullScreenAction>
+		<semantic:exitFullScreenAction>
+			<semantic:ExitFullScreenAction
+					id="exitFullScreen"
+					visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+					press=".toggleFullScreen"/>
+		</semantic:exitFullScreenAction>
+
+	</semantic:SemanticPage>
+
+</mvc:View>
